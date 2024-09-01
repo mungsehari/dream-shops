@@ -1,13 +1,18 @@
 package com.hari.service.product;
 
+import com.hari.dto.ImageDto;
+import com.hari.dto.ProductDto;
 import com.hari.exception.ProductNotFoundException;
 import com.hari.model.Category;
+import com.hari.model.Image;
 import com.hari.model.Product;
 import com.hari.repository.CategoryRepository;
+import com.hari.repository.ImageRepository;
 import com.hari.repository.ProductRepository;
 import com.hari.request.AddProductRequest;
 import com.hari.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +24,10 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
 
     private final CategoryRepository categoryRepository;
+
+    private final ImageRepository imageRepository;
+
+    private final ModelMapper modelMapper;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -112,4 +121,21 @@ public class ProductServiceImpl implements ProductService{
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand,name);
     }
+
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products) {
+        return products.stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public ProductDto convertToDto(Product product) {
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        List<Image> images = imageRepository.findByProductId(product.getId());
+        List<ImageDto> imageDtos = images.stream()
+                .map(image -> modelMapper.map(image, ImageDto.class))
+                .toList();
+        productDto.setImages(imageDtos);
+        return productDto;
+    }
+
 }
