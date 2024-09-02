@@ -6,6 +6,7 @@ import com.hari.repository.CartItemRepository;
 import com.hari.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicLong;
@@ -25,6 +26,7 @@ public class CartServiceImpl implements CartService {
         return cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void clearCart(Long id) {
         Cart cart = getCart(id);
@@ -47,7 +49,5 @@ public class CartServiceImpl implements CartService {
         newCart.setId(newCartId);
         return cartRepository.save(newCart).getId();
     }
-
-
 
 }
