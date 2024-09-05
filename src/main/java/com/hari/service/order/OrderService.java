@@ -2,14 +2,16 @@ package com.hari.service.order;
 
 import java.util.List;
 
+import com.hari.dto.OrderDto;
 import com.hari.model.Order;
 
 public interface OrderService {
 
     Order placeOrder(Long userId);
 
-    Order getOrder(Long OrderId);
+    OrderDto getOrder(Long orderId);
 
-    List<Order> getUserOrders(Long userId);
+    List<OrderDto> getUserOrders(Long userId);
 
+    OrderDto convertToDto(Order order);
 }
