@@ -2,6 +2,9 @@ package com.hari.controller;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import com.hari.model.Cart;
+import com.hari.model.User;
+import com.hari.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,16 +27,16 @@ import lombok.RequiredArgsConstructor;
 public class CartItemController {
     private final CartItemService cartItemService;
     private final CartService cartService;
+    private final UserService userService;
 
     @PostMapping("item/add")
-    public ResponseEntity<ApiResponse> addItemToCart(@RequestParam(required = false) Long cartId, @RequestParam Long productId,
+    public ResponseEntity<ApiResponse> addItemToCart( @RequestParam Long productId,
             @RequestParam Integer quantity) {
         try {
-            if (cartId == null) {
-                cartId = cartService.initializeNewCart();
+            User user=userService.getUserById(1L);
+            Cart cart=cartService.initializeNewCart(user);
 
-            }
-            cartItemService.addItemToCart(cartId, productId, quantity);
+            cartItemService.addItemToCart(cart.getId(), productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Item added to cart!", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
