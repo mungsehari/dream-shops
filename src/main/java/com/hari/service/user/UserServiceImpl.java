@@ -1,6 +1,8 @@
 package com.hari.service.user;
 
+import com.hari.dto.UserDto;
 import com.hari.exception.AlreadyExistsException;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.hari.exception.ResourceNotFoundException;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long UserId) {
@@ -24,7 +27,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User CreateUser(CreateUserRequest request) {
+    public User createUser(CreateUserRequest request) {
         return Optional.of(request)
                 .filter(user->!userRepository.existsByEmail(request.getEmail()))
                 .map(req->{
@@ -54,6 +57,11 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User not found");
         });
 
+    }
+
+    @Override
+    public UserDto convertUserToDto(User user){
+        return modelMapper.map(user,UserDto.class);
     }
 
 }
