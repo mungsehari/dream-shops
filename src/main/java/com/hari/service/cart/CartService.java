@@ -1,6 +1,7 @@
 package com.hari.service.cart;
 
 import com.hari.model.Cart;
+import com.hari.model.User;
 
 import java.math.BigDecimal;
 
@@ -11,7 +12,7 @@ public interface CartService {
 
     BigDecimal getTotalPrice(Long id);
 
-    Long initializeNewCart();
+    Cart initializeNewCart(User user);
 
     Cart getCartByUserId(Long userId);
 }
