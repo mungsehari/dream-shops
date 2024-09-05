@@ -2,6 +2,7 @@ package com.hari.service.cart;
 
 import com.hari.exception.ResourceNotFoundException;
 import com.hari.model.Cart;
+import com.hari.model.User;
 import com.hari.repository.CartItemRepository;
 import com.hari.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -43,11 +45,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Long initializeNewCart() {
-        Cart newCart = new Cart();
-        Long newCartId = cartIdGenerator.incrementAndGet();
-        newCart.setId(newCartId);
-        return cartRepository.save(newCart).getId();
+    public Cart initializeNewCart(User user) {
+        return Optional.ofNullable(getCartByUserId(user.getId()))
+                .orElseGet(()->{
+                    Cart cart = new Cart();
+                    cart.setUser(user);
+                    return cartRepository.save(cart);
+                });
     }
 
     @Override
