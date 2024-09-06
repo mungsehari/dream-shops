@@ -2,6 +2,7 @@ package com.hari.service.product;
 
 import com.hari.dto.ImageDto;
 import com.hari.dto.ProductDto;
+import com.hari.exception.AlreadyExistsException;
 import com.hari.exception.ProductNotFoundException;
 import com.hari.model.Category;
 import com.hari.model.Image;
@@ -31,17 +32,21 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product addProduct(AddProductRequest request) {
-        Category category= Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
-                .orElseGet(()->{
-            Category newCategory= new Category(request.getCategory().getName());
-            return categoryRepository.save(newCategory);
-
-        });
-
+        if (productExists(request.getName(),request.getBrand())){
+            throw new AlreadyExistsException(request.getBrand()+""+request.getName()+""+"already exists , you many update this product instead!");
+        }
+        Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
+                .orElseGet(() -> {
+                    Category newCategory = new Category(request.getCategory().getName());
+                    return categoryRepository.save(newCategory);
+                });
         request.setCategory(category);
-        return productRepository.save(createProduct(request,category));
+        return productRepository.save(createProduct(request, category));
     }
 
+    private  boolean productExists(String name, String brand) {
+        return productRepository.existsByNameAndBrand(name,brand);
+    }
     private Product createProduct(AddProductRequest request, Category category){
         return new Product(
                 request.getName(),

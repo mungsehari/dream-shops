@@ -60,8 +60,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto convertUserToDto(User user){
-        return modelMapper.map(user,UserDto.class);
+    public UserDto convertUserToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
+
 
 }
