@@ -3,6 +3,9 @@ package com.hari.service.user;
 import com.hari.dto.UserDto;
 import com.hari.exception.AlreadyExistsException;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hari.exception.ResourceNotFoundException;
@@ -20,6 +23,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User getUserById(Long UserId) {
@@ -35,7 +39,7 @@ public class UserServiceImpl implements UserService {
                     user.setEmail(request.getEmail());
                     user.setFirstName(request.getFirstName());
                     user.setLastName(request.getLastName());
-                    user.setPassword(request.getPassword());
+                    user.setPassword(passwordEncoder.encode(request.getPassword()));
                     return  userRepository.save(user);
                 }).orElseThrow(() -> new AlreadyExistsException("Oops!"+ request.getEmail()+"already exists"));
 
@@ -62,6 +66,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto convertUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public User getAuthenticatedUser() {
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String email=authentication.getName();
+        return userRepository.findByEmail(email);
+
     }
 
 
