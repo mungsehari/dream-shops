@@ -2,6 +2,7 @@ package com.hari.service.user;
 
 import com.hari.dto.UserDto;
 import com.hari.exception.AlreadyExistsException;
+import com.hari.security.jwt.JwtUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -75,6 +76,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
 
     }
+
 
 
 }

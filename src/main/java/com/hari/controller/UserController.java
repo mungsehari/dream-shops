@@ -22,6 +22,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class UserController {
     private final UserService userService;
 
+
     @GetMapping("/{userId}/user")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
        try {

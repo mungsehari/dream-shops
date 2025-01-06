@@ -4,6 +4,7 @@ import com.hari.dto.UserDto;
 import com.hari.model.User;
 import com.hari.request.CreateUserRequest;
 import com.hari.request.UserUpdateRequest;
+import org.springframework.security.core.Authentication;
 
 public interface UserService {
 
@@ -18,4 +19,8 @@ public interface UserService {
     UserDto convertUserToDto(User user);
 
     User getAuthenticatedUser();
+
+
+
+
 }
